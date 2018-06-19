@@ -118,9 +118,9 @@ sector_trailer_unsafeFrame::sector_trailer_unsafeFrame(wxWindow* parent,wxWindow
     GridSizer2->Add(AUTH_A, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     AUTH_B = new wxRadioButton(this, ID_RADIOBUTTON1, _("MIFARE_AUTHENT1B"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON1"));
     GridSizer2->Add(AUTH_B, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText4 = new wxStaticText(this, ID_STATICTEXT4, _("Key index : (example, for key index 1, input 01 - hexadecimal)"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT4"));
+    StaticText4 = new wxStaticText(this, ID_STATICTEXT4, _("Key (6 bytes) : "), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT4"));
     GridSizer2->Add(StaticText4, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-    KEY_LABEL = new wxTextCtrl(this, ID_TEXTCTRL4, wxEmptyString, wxDefaultPosition, wxSize(45,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL4"));
+    KEY_LABEL = new wxTextCtrl(this, ID_TEXTCTRL4, wxEmptyString, wxDefaultPosition, wxSize(200,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL4"));
     GridSizer2->Add(KEY_LABEL, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
     bWrite = new wxButton(this, ID_BUTTON3, _("WRITE"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
@@ -246,18 +246,19 @@ void sector_trailer_unsafeFrame::OnbWriteClick(wxCommandEvent& event)
     uint8_t addressing_mode = (uint8_t)ConvertStringToInt(AddressingMode_Str, 16);
     uint8_t address = (uint8_t)ConvertStringToInt(Address_Str, 16);
     uint8_t sector_trailer[16];
-    uint8_t key_index = (uint8_t)ConvertStringToInt(KeyIndex_Str, 16);;
+    uint8_t key[6];
 
     ConvertStringToIntArray(SectorTrailer_Str, sector_trailer, 16);
+    ConvertStringToIntArray(KeyIndex_Str, key, 16);
 
 
     if(AUTH_A -> GetValue()){
 
-        status = SectorTrailerWriteUnsafe(addressing_mode, address, sector_trailer, 0x60, key_index);
+        status = SectorTrailerWriteUnsafe_PK(addressing_mode, address, sector_trailer, 0x60, key);
 
     }else if(AUTH_B -> GetValue()){
 
-        status = SectorTrailerWriteUnsafe(addressing_mode, address, sector_trailer, 0x61, key_index);
+        status = SectorTrailerWriteUnsafe_PK(addressing_mode, address, sector_trailer, 0x61, key);
 
     }
 
