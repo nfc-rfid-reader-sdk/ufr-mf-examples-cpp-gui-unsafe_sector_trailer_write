@@ -42,7 +42,7 @@
 			<object class="sizeritem">
 				<object class="wxGridSizer" variable="GridSizer2" member="no">
 					<cols>2</cols>
-					<rows>7</rows>
+					<rows>8</rows>
 					<hgap>-10</hgap>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
@@ -119,6 +119,22 @@
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="ID_TEXTCTRL4" variable="KEY_LABEL" member="yes">
 							<size>200,-1</size>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="yes">
+							<label>Sector data : </label>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_TEXTCTRL7" variable="SECTOR_DATA" member="yes">
+							<size>400,-1</size>
 						</object>
 						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>

@@ -53,6 +53,8 @@ class sector_trailer_unsafeFrame: public wxFrame
         static const long ID_RADIOBUTTON1;
         static const long ID_STATICTEXT4;
         static const long ID_TEXTCTRL4;
+        static const long ID_STATICTEXT6;
+        static const long ID_TEXTCTRL7;
         static const long ID_BUTTON3;
         static const long ID_BUTTON4;
         static const long ID_STATICTEXT5;
@@ -74,12 +76,14 @@ class sector_trailer_unsafeFrame: public wxFrame
         wxStaticText* StaticText3;
         wxStaticText* StaticText4;
         wxStaticText* StaticText5;
+        wxStaticText* StaticText6;
         wxStatusBar* StatusBar1;
         wxTextCtrl* ADDRESSING_MODE_LABEL;
         wxTextCtrl* ADDRESS_LABEL;
         wxTextCtrl* FUNCTION_STATUS;
         wxTextCtrl* KEY_LABEL;
         wxTextCtrl* OPEN_STATUS;
+        wxTextCtrl* SECTOR_DATA;
         wxTextCtrl* TRAILER_DATA_LABEL;
         //*)
 

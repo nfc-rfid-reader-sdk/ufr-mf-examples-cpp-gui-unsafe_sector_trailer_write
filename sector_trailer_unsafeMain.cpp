@@ -62,6 +62,8 @@ const long sector_trailer_unsafeFrame::ID_RADIOBUTTON2 = wxNewId();
 const long sector_trailer_unsafeFrame::ID_RADIOBUTTON1 = wxNewId();
 const long sector_trailer_unsafeFrame::ID_STATICTEXT4 = wxNewId();
 const long sector_trailer_unsafeFrame::ID_TEXTCTRL4 = wxNewId();
+const long sector_trailer_unsafeFrame::ID_STATICTEXT6 = wxNewId();
+const long sector_trailer_unsafeFrame::ID_TEXTCTRL7 = wxNewId();
 const long sector_trailer_unsafeFrame::ID_BUTTON3 = wxNewId();
 const long sector_trailer_unsafeFrame::ID_BUTTON4 = wxNewId();
 const long sector_trailer_unsafeFrame::ID_STATICTEXT5 = wxNewId();
@@ -101,7 +103,7 @@ sector_trailer_unsafeFrame::sector_trailer_unsafeFrame(wxWindow* parent,wxWindow
     OPEN_STATUS = new wxTextCtrl(this, ID_TEXTCTRL5, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxTE_CENTRE, wxDefaultValidator, _T("ID_TEXTCTRL5"));
     StaticBoxSizer1->Add(OPEN_STATUS, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     GridSizer1->Add(StaticBoxSizer1, 1, wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL, 5);
-    GridSizer2 = new wxGridSizer(7, 2, 0, -10);
+    GridSizer2 = new wxGridSizer(8, 2, 0, -10);
     StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Addressing mode : (example, for addressing mode 1, input 01 - hexadecimal) "), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     GridSizer2->Add(StaticText1, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     ADDRESSING_MODE_LABEL = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxSize(45,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
@@ -122,6 +124,10 @@ sector_trailer_unsafeFrame::sector_trailer_unsafeFrame(wxWindow* parent,wxWindow
     GridSizer2->Add(StaticText4, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     KEY_LABEL = new wxTextCtrl(this, ID_TEXTCTRL4, wxEmptyString, wxDefaultPosition, wxSize(200,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL4"));
     GridSizer2->Add(KEY_LABEL, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText6 = new wxStaticText(this, ID_STATICTEXT6, _("Sector data : "), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT6"));
+    GridSizer2->Add(StaticText6, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    SECTOR_DATA = new wxTextCtrl(this, ID_TEXTCTRL7, wxEmptyString, wxDefaultPosition, wxSize(400,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL7"));
+    GridSizer2->Add(SECTOR_DATA, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
     bWrite = new wxButton(this, ID_BUTTON3, _("WRITE"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
     BoxSizer1->Add(bWrite, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -247,6 +253,10 @@ void sector_trailer_unsafeFrame::OnbWriteClick(wxCommandEvent& event)
     uint8_t address = (uint8_t)ConvertStringToInt(Address_Str, 16);
     uint8_t sector_trailer[16];
     uint8_t key[6];
+    uint8_t data[16];
+    uint32_t data_int[16];
+    char DATA_STR[255] = "";
+    wxString BISR_DATA = "";
 
     ConvertStringToIntArray(SectorTrailer_Str, sector_trailer, 16);
     ConvertStringToIntArray(KeyIndex_Str, key, 16);
@@ -256,11 +266,28 @@ void sector_trailer_unsafeFrame::OnbWriteClick(wxCommandEvent& event)
 
         status = SectorTrailerWriteUnsafe_PK(addressing_mode, address, sector_trailer, 0x60, key);
 
+        status = BlockInSectorRead_PK(data, address, 3, 0x60, key);
+
     }else if(AUTH_B -> GetValue()){
 
         status = SectorTrailerWriteUnsafe_PK(addressing_mode, address, sector_trailer, 0x61, key);
 
+        status = BlockInSectorRead_PK(data, address, 3, 0x60, key);
+
     }
+
+    SECTOR_DATA->Clear();
+
+    for(unsigned int i = 0; i < 16; i++){
+
+        data_int[i] = data[i];
+
+        strcpy(DATA_STR, "");
+        sprintf(DATA_STR, "%02X", data_int[i]);
+        BISR_DATA << DATA_STR;
+    }
+
+    SECTOR_DATA->SetValue(BISR_DATA);
 
     wxStatus = UFR_Status2String(status);
 
@@ -275,6 +302,8 @@ void sector_trailer_unsafeFrame::OnbWriteClick(wxCommandEvent& event)
         wxMessageBox(msg, _("ERROR, status is : "));
 
     }
+
+
 
 }
 
@@ -313,4 +342,5 @@ void sector_trailer_unsafeFrame::OnbClearClick(wxCommandEvent& event)
     TRAILER_DATA_LABEL->Clear();
     KEY_LABEL->Clear();
     FUNCTION_STATUS->Clear();
+    SECTOR_DATA->Clear();
 }
